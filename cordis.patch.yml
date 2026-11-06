@@ -1,0 +1,4 @@
+# DSH飞书客户端：1）用户（人）通过本插件提供UI访问远端智能体；2）本地DSH通过调用本插件提供工具访问远端智能体。支持的远端智能体包括且不限于：DSH、OpenClaw、WorkBuddy、Weknora等等。
+- insert:
+    - id: cubeai-feishu-client
+      name: '@cubeai/dsh-feishu-client'

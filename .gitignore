@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/cache/
+.yarn/install-state.gz
+
+# npm cache created by local installs (e.g. npm --cache .npm-cache)
+.npm-cache/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build and test artifacts
+coverage/
+dist/
+tmp/
+*.tgz
+*.tsbuildinfo
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+secrets.json
+*.pem
+*.key
+
+# Editors and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
