@@ -11,6 +11,7 @@ import {
   classifyReactions,
   filterRemotes,
   isApprovalAction,
+  isProgressPlaceholder,
   kindFromName,
   localFeishuChannelsAppIds,
   normalizeAgentTools,
@@ -646,4 +647,44 @@ test('pollMessages replaces a same-id card update', async () => {
   assert.equal(record.collected.length, 1)
   assert.equal(record.collected[0].text, '最终答案')
   assert.ok(record.lastMessageAt >= firstSeen)
+})
+
+test('isProgressPlaceholder recognizes progress placeholders only', () => {
+  assert.equal(isProgressPlaceholder('WeKnora\n💭 正在思考...'), true)
+  assert.equal(isProgressPlaceholder('WeKnora 正在思考'), true)
+  assert.equal(isProgressPlaceholder('正在处理中...'), true)
+  assert.equal(isProgressPlaceholder('WeKnora is thinking...'), true)
+  assert.equal(isProgressPlaceholder('最终答案'), false)
+  assert.equal(isProgressPlaceholder('正在思考如何回答这个问题'), false)
+  assert.equal(isProgressPlaceholder('请升级至最新版本客户端，以查看内容'), false)
+})
+
+test('quiet fallback waits while the latest assistant message is a progress placeholder', async () => {
+  const app = { id: 'app_progress', appId: 'cli_progress', name: 'Progress', chatId: 'oc_progress', auth: { authorized: true }, tags: [], description: '' }
+  const service = {
+    config: { agentTools: { quietFallbackMs: 5000 } },
+    debug() {},
+    async reactions() { return [] },
+  }
+  const bridge = new AgentBridge(service, { get: () => undefined })
+  const now = Date.now()
+  const record = {
+    id: 'req_progress',
+    app,
+    anchors: [{ messageId: 'om_anchor' }],
+    collected: [{
+      id: 'om_card',
+      role: 'assistant',
+      kind: 'interactive',
+      text: 'WeKnora\n💭 正在思考...',
+      createdAt: now - 10_000,
+    }],
+    startedAt: now - 20_000,
+    lastMessageAt: now - 10_000,
+    sawProcessing: false,
+    noneSince: 0,
+  }
+  assert.equal(await bridge.pollReactions(record), 'waiting')
+  record.collected[0] = { ...record.collected[0], text: '最终答案' }
+  assert.equal(await bridge.pollReactions(record), 'quiet')
 })

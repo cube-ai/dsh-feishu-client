@@ -335,6 +335,7 @@ ask
 | `ERROR` | 本轮失败 |
 | 曾经 `OnIt`、现在消失 | 远端取消 |
 | 有助手消息且静默 `quietFallbackMs` | reaction 不可读时的静默兜底 |
+| 最新助手消息仍是「正在思考/处理中」占位 | 不触发静默兜底，继续等待卡片更新或超时 |
 
 只接受机器人身份贴的 reaction；轮询间隔默认 2000ms。超时默认 180 秒，最大 600 秒；超时返回 `pending` 和 `request_id`。
 
@@ -520,4 +521,4 @@ http://127.0.0.1:32123/api/dsh-feishu-client/oauth/callback
 node --test test/*.test.js
 ```
 
-当前 34 项测试覆盖消息归一化、reaction、审批、时钟偏差、同 ID 卡片更新、Agent 工具状态机、路径前缀、桌面回调和远端冲突检测。
+当前 36 项测试覆盖消息归一化、reaction、审批、时钟偏差、同 ID 卡片更新、Agent 工具状态机、路径前缀、桌面回调和远端冲突检测。
